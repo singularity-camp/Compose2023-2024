@@ -6,35 +6,34 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import kz.assylkhanov.jetpackcompose.ui.screens.HomeScreen
+import kz.assylkhanov.jetpackcompose.ui.screens.InputScreen
+import kz.assylkhanov.jetpackcompose.ui.screens.ResultScreen
+import kz.assylkhanov.jetpackcompose.ui.screens.SecondScreen
 import kz.assylkhanov.jetpackcompose.ui.theme.JetpackComposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -45,40 +44,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             JetpackComposeTheme {
-                val enteredText by vm.text
-
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                ) {
-                    Text(text = enteredText)
-                    InputScreen(text = enteredText,
-                        onTextChange = {
-                            vm.onTextChange(it)
-                        })
-                    Button(onClick = { vm.onClearButtonClick() }) {
-                        Text(text = stringResource(id = R.string.clear))
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "input") {
+                    composable("input") { InputScreen(navController = navController) }
+                    composable(
+                        "result?resultText={resultText}",
+                        arguments = listOf(navArgument("resultText") { nullable = true })
+                    ) {
+                        val resultText = it.arguments?.getString("resultText") ?: ""
+                        ResultScreen(resultText)
                     }
-
                 }
-
             }
         }
     }
 }
-
-@Composable
-fun InputScreen(
-    text: String,
-    onTextChange: (String) -> Unit
-) {
-    TextField(value = text, onValueChange = {
-
-        onTextChange(it)
-    })
-}
-
 
 @Composable
 fun Conversation(messages: List<Message>) {

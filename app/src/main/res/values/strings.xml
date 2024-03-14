@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">JetpackCompose</string>
+    <string name="hello_world">Hello World!</string>
     <string name="clear">Clear</string>
+    <string name="done">Done</string>
+    <string name="result_w_placeholder">You\'ve entered the following text: \n%s</string>
+    <string name="next">Next</string>
+    <string name="second_screen">Hi! I\'m second screen!</string>
 </resources>
